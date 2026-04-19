@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 from flask import Flask, redirect, render_template
+from data import db_session
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -20,4 +21,5 @@ def login():
 
 
 if __name__ == '__main__':
+    db_session.global_init("db/blogs.db")
     app.run(port=8080, host='127.0.0.1')
