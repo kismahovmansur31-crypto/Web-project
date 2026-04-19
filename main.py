@@ -5,7 +5,7 @@ from flask import Flask, redirect, render_template
 from data import db_session
 from forms.user import RegisterForm
 from flask_login import LoginManager
-from flask_login import login_user, login_required
+from flask_login import login_user, login_required, logout_user
 from data.users import User
 
 app = Flask(__name__)
