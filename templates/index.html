@@ -5,13 +5,16 @@
     <title>Мой Полароид Альбом</title>
     <style>
     body {
-        font-family: sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background: #f0f0f0;
-        margin: 0;
-        padding: 40px;
+    background-image: url("{{ url_for('static', filename='images/bg.jpg') }}");
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    margin: 0;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
     }
     .grid {
         display: grid;
