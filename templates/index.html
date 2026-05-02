@@ -4,19 +4,54 @@
     <meta charset="UTF-8">
     <title>Мой Полароид Альбом</title>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #fdfdfd; }
-        .grid { display: grid; grid-template-columns: repeat(3, 220px); gap: 30px; margin-top: 50px; }
-        .slot { 
-            width: 200px; height: 250px; background: white; border: 1px solid #ddd;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 10px 10px 40px 10px;
-            display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; transition: transform 0.2s;
-        }
-        .slot:hover { transform: scale(1.05) rotate(2deg); }
-        .slot img { width: 100%; height: 100%; object-fit: cover; }
-        .placeholder { width: 100%; height: 100%; border: 2px dashed #ccc; 
-                       display: flex; align-items: center; justify-content: center; font-size: 40px; color: #ccc; }
-    </style>
+    body {
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #f0f0f0;
+        margin: 0;
+        padding: 40px;
+    }
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 350px);
+        gap: 80px;
+    }
+    .slot {
+        width: 350px;
+        height: 420px;
+        background: white;
+        border: 1px solid #ddd;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        padding: 20px 20px 60px 20px;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+    .slot:hover {
+        transform: scale(1.03) translateY(-10px);
+    }
+    .slot img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .placeholder {
+        width: 100%;
+        height: 100%;
+        border: 3px dashed #eee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 60px;
+        color: #eee;
+    }
+</style>
+
 </head>
 <body>
     <h1>Мои воспоминания</h1>
