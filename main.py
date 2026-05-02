@@ -7,20 +7,21 @@ from forms.user import RegisterForm
 from flask_login import LoginManager
 from flask_login import login_user, login_required, logout_user
 from data.users import User
+import os
+from PIL import Image, ImageOps
+from flask import request
 
 app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 class LoginForm(FlaskForm):
     email = EmailField('Почта', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     remember_me = BooleanField('Запомнить меня')
     submit = SubmitField('Войти')
 
-@app.route("/")
-def index():
-    return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -69,6 +70,33 @@ def load_user(user_id):
 def logout():
     logout_user()
     return redirect("/")
+
+def process_photo(input_file, slot_id):
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
+    img = Image.open(input_file)
+    # Делаем фото квадратным 600x600
+    img = ImageOps.fit(img, (600, 600), Image.Resampling.LANCZOS)
+    filename = f"photo_{slot_id}.png"
+    img.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    slot_id = request.form.get('slot_id')
+    file = request.files.get('photo')
+    if file and slot_id:
+        process_photo(file, slot_id)
+    return redirect('/')
+
+# И обнови свой старый маршрут index, чтобы он видел фотки:
+@app.route("/")
+def index():
+    photos = {}
+    for i in range(1, 7):
+        if os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], f"photo_{i}.png")):
+            photos[i] = f"photo_{i}.png"
+    return render_template('index.html', photos=photos)
+
 
 
 

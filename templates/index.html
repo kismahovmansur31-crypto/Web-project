@@ -1,4 +1,41 @@
-{% extends "base.html" %}
-
-{% block content %}
-{% endblock %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мой Полароид Альбом</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #fdfdfd; }
+        .grid { display: grid; grid-template-columns: repeat(3, 220px); gap: 30px; margin-top: 50px; }
+        .slot { 
+            width: 200px; height: 250px; background: white; border: 1px solid #ddd;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 10px 10px 40px 10px;
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; transition: transform 0.2s;
+        }
+        .slot:hover { transform: scale(1.05) rotate(2deg); }
+        .slot img { width: 100%; height: 100%; object-fit: cover; }
+        .placeholder { width: 100%; height: 100%; border: 2px dashed #ccc; 
+                       display: flex; align-items: center; justify-content: center; font-size: 40px; color: #ccc; }
+    </style>
+</head>
+<body>
+    <h1>Мои воспоминания</h1>
+    <div class="grid">
+        {% for i in range(1, 7) %}
+        <div class="slot" onclick="document.getElementById('file-{{i}}').click()">
+            {% if i in photos %}
+                <!-- Добавляем случайное число к ссылке, чтобы браузер обновлял картинку сразу -->
+                <img src="{{ url_for('static', filename='uploads/' + photos[i]) }}?{{ range(1, 9999)|random }}">
+            {% else %}
+                <div class="placeholder">+</div>
+            {% endif %}
+            
+            <form action="/upload" method="post" enctype="multipart/form-data" id="form-{{i}}" style="display:none;">
+                <input type="file" name="photo" id="file-{{i}}" onchange="document.getElementById('form-{{i}}').submit()">
+                <input type="hidden" name="slot_id" value="{{i}}">
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
