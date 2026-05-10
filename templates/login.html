@@ -1,29 +1,115 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            background-image: url("/static/images/bg.jpg"); /* Прямой путь для надежности */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
 
-{% block content %}
-    <h1>Авторизация</h1>
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(class="form-control", type="email") }}<br>
-            {% for error in form.email.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(class="form-control", type="password") }}<br>
-            {% for error in form.password.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
-        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-        <div>{{ message }}</div>
-    </form>
-{% endblock %}
+        /* Тот самый эффект блюра на фоне */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: -1;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 380px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        h2 { margin-top: 0; color: #222; letter-spacing: 1px; }
+
+        /* Стили для всех типов полей ввода от Flask-WTF */
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background: #fdfdfd;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #333;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            outline: none;
+        }
+
+        /* Стиль для кнопки Submit */
+        input[type="submit"] {
+            background: #222;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        input[type="submit"]:hover {
+            background: #444;
+            transform: translateY(-2px);
+        }
+
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .error-msg { color: #d63031; margin-bottom: 15px; font-weight: bold; }
+        .link { color: #666; text-decoration: none; font-size: 14px; transition: 0.2s; }
+        .link:hover { color: #000; text-decoration: underline; }
+        label { display: block; text-align: left; font-weight: 600; color: #444; margin-left: 5px; }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <h2>С возвращением</h2>
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+
+            <label>Почта</label>
+            {{ form.email() }}
+
+            <label>Пароль</label>
+            {{ form.password() }}
+
+            <div style="text-align: left; margin-bottom: 20px;">
+                {{ form.remember_me() }} {{ form.remember_me.label }}
+            </div>
+
+            {% if message %}
+                <div class="error-msg">{{ message }}</div>
+            {% endif %}
+
+            {{ form.submit() }}
+        </form>
+        <a href="/register" class="link">Создать новый аккаунт</a>
+    </div>
+</body>
+</html>
