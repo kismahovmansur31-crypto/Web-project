@@ -3,74 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Мой Полароид Альбом</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 80px 50px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            font-family: 'Segoe UI', sans-serif;
-            background-image: url("{{ url_for('static', filename='images/bg.jpg') }}");
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
-        }
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(8px);
-            z-index: -1;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 400px);
-            gap: 60px;
-        }
-        .slot {
-            width: 400px;
-            height: 500px;
-            background: white;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            padding: 20px 20px 10px 20px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            transition: 0.3s;
-        }
-        .slot:hover { transform: scale(1.02) rotate(1deg); }
-        .photo-area {
-            width: 100%;
-            height: 350px;
-            background: #f7f7f7;
-            cursor: pointer;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .photo-area img { width: 100%; height: 100%; object-fit: cover; }
-        .placeholder { font-size: 80px; color: #ddd; }
-        .polaroid-input {
-            width: 100%;
-            border: none;
-            outline: none;
-            margin-top: 20px;
-            font-family: 'Comic Sans MS', cursive;
-            font-size: 24px;
-            text-align: center;
-            background: transparent;
-            color: #333;
-        }
-    </style>
+    <!-- Подключаем файл стилей -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <h1>Мои воспоминания</h1>
+
     <div class="grid">
         {% for i in range(1, 7) %}
         <div class="slot">
+            <!-- Зона для фото (клик вызывает скрытый выбор файла) -->
             <div class="photo-area" onclick="document.getElementById('file-{{i}}').click()">
                 {% if i in photos %}
                     <img src="{{ url_for('static', filename='uploads/' + photos[i]) }}?{{ range(1, 9999)|random }}">
@@ -79,7 +21,8 @@
                 {% endif %}
             </div>
 
-            <form action="/save_caption" method="post">
+            <!-- Форма для подписи на белом поле полароида -->
+            <form action="/save_caption" method="post" style="width: 100%;">
                 <input type="hidden" name="slot_id" value="{{i}}">
                 <input type="text" name="caption" class="polaroid-input"
                        placeholder="Напиши что-то..."
@@ -88,6 +31,7 @@
                        onclick="event.stopPropagation()">
             </form>
 
+            <!-- Скрытая форма для самой загрузки картинки -->
             <form action="/upload" method="post" enctype="multipart/form-data" id="form-{{i}}" style="display:none;">
                 <input type="file" name="photo" id="file-{{i}}" accept="image/*" onchange="document.getElementById('form-{{i}}').submit()">
                 <input type="hidden" name="slot_id" value="{{i}}">
