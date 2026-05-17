@@ -3,39 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>Мой Полароид Альбом</title>
-    <!-- Подключаем файл стилей -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <nav>
+        {% if current_user.is_authenticated %}
+            <span class="user-greeting">Привет, {{ current_user.name }}!</span>
+            <a href="/logout" class="nav-link">Выйти</a>
+        {% else %}
+            <a href="/login" class="nav-link">Войти</a>
+            <a href="/register" class="nav-link">Регистрация</a>
+        {% endif %}
+    </nav>
+
     <h1>Мои воспоминания</h1>
 
     <div class="grid">
         {% for i in range(1, 7) %}
         <div class="slot">
-            <!-- Зона для фото (клик вызывает скрытый выбор файла) -->
-            <div class="photo-area" onclick="document.getElementById('file-{{i}}').click()">
+            <div class="photo-area" {% if current_user.is_authenticated %}onclick="document.getElementById('file-{{i}}').click()"{% endif %}>
                 {% if i in photos %}
                     <img src="{{ url_for('static', filename='uploads/' + photos[i]) }}?{{ range(1, 9999)|random }}">
                 {% else %}
-                    <div class="placeholder">+</div>
+                    <div class="placeholder">{% if current_user.is_authenticated %}+{% else %}🔒{% endif %}</div>
                 {% endif %}
             </div>
 
-            <!-- Форма для подписи на белом поле полароида -->
             <form action="/save_caption" method="post" style="width: 100%;">
                 <input type="hidden" name="slot_id" value="{{i}}">
                 <input type="text" name="caption" class="polaroid-input"
-                       placeholder="Напиши что-то..."
+                       placeholder="{% if current_user.is_authenticated %}Напиши что-то...{% else %}Авторизуйтесь{% endif %}"
                        value="{{ captions[i] if i in captions else '' }}"
                        onblur="this.form.submit()"
-                       onclick="event.stopPropagation()">
+                       onclick="event.stopPropagation()"
+                       {% if not current_user.is_authenticated %}disabled{% endif %}>
             </form>
 
-            <!-- Скрытая форма для самой загрузки картинки -->
+            {% if current_user.is_authenticated %}
             <form action="/upload" method="post" enctype="multipart/form-data" id="form-{{i}}" style="display:none;">
                 <input type="file" name="photo" id="file-{{i}}" accept="image/*" onchange="document.getElementById('form-{{i}}').submit()">
                 <input type="hidden" name="slot_id" value="{{i}}">
             </form>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
